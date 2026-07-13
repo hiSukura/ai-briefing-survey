@@ -1,0 +1,12 @@
+{
+  "name": "ai-briefing-survey-backend",
+  "version": "1.0.0",
+  "description": "AI简报事实调研问卷后端",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
