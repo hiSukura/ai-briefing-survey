@@ -1,9 +1,18 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
+const https = require('https');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// GitHub 备份配置
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN || '';
+const GITHUB_OWNER = 'hiSukura';
+const GITHUB_REPO = 'ai-briefing-survey';
+const GITHUB_PATH = 'data/submissions.json';
+const GITHUB_API = 'https://api.github.com';
+const GIT_SYNC_ENABLED = !!GITHUB_TOKEN;
 
 // 解析 JSON body
 app.use(express.json({ limit: '1mb' }));
@@ -17,6 +26,106 @@ const DATA_FILE = path.join(__dirname, 'data', 'submissions.json');
 // 确保数据文件存在
 if (!fs.existsSync(DATA_FILE)) {
   fs.writeFileSync(DATA_FILE, '[]', 'utf-8');
+}
+
+// ========== GitHub API 工具函数 ==========
+
+function githubRequest(method, urlPath, body) {
+  return new Promise((resolve, reject) => {
+    const url = new URL(GITHUB_API + urlPath);
+    const options = {
+      hostname: url.hostname,
+      path: url.pathname + url.search,
+      method: method,
+      headers: {
+        'Authorization': 'token ' + GITHUB_TOKEN,
+        'User-Agent': 'ai-briefing-survey',
+        'Accept': 'application/vnd.github.v3+json'
+      }
+    };
+    if (body) {
+      options.headers['Content-Type'] = 'application/json';
+      options.headers['Content-Length'] = Buffer.byteLength(body);
+    }
+
+    const req = https.request(options, (res) => {
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => {
+        try {
+          const json = JSON.parse(data);
+          if (res.statusCode >= 200 && res.statusCode < 300) {
+            resolve(json);
+          } else {
+            reject(new Error('GitHub API ' + res.statusCode + ': ' + (json.message || data)));
+          }
+        } catch (e) {
+          reject(new Error('Parse error: ' + data));
+        }
+      });
+    });
+    req.on('error', reject);
+    if (body) req.write(body);
+    req.end();
+  });
+}
+
+// 从 GitHub 拉取数据（返回 { data: [], sha: '' }）
+async function fetchFromGitHub() {
+  const result = await githubRequest('GET', '/repos/' + GITHUB_OWNER + '/' + GITHUB_REPO + '/contents/' + GITHUB_PATH);
+  const content = Buffer.from(result.content, 'base64').toString('utf-8');
+  return { data: JSON.parse(content), sha: result.sha };
+}
+
+// 写数据到 GitHub（需要 sha）
+async function pushToGitHub(data, sha) {
+  const content = Buffer.from(JSON.stringify(data, null, 2)).toString('base64');
+  const body = JSON.stringify({
+    message: 'data: ' + new Date().toISOString(),
+    content: content,
+    sha: sha
+  });
+  await githubRequest('PUT', '/repos/' + GITHUB_OWNER + '/' + GITHUB_REPO + '/contents/' + GITHUB_PATH, body);
+}
+
+// 同步到 GitHub（带重试）
+async function syncToGitHub() {
+  if (!GIT_SYNC_ENABLED) return;
+  const data = JSON.parse(fs.readFileSync(DATA_FILE, 'utf-8'));
+  let lastErr = null;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const remote = await fetchFromGitHub();
+      await pushToGitHub(data, remote.sha);
+      console.log('GitHub sync OK, ' + data.length + ' records');
+      return;
+    } catch (err) {
+      lastErr = err;
+      if (attempt < 2) await new Promise(r => setTimeout(r, 1000)); // 等1秒重试
+    }
+  }
+  console.error('GitHub sync failed after 3 attempts:', lastErr.message);
+}
+
+// 启动时从 GitHub 恢复数据
+async function restoreFromGitHub() {
+  if (!GIT_SYNC_ENABLED) return;
+  try {
+    const local = JSON.parse(fs.readFileSync(DATA_FILE, 'utf-8'));
+    const remote = await fetchFromGitHub();
+    // 用数据较多的版本
+    if (remote.data.length > local.length) {
+      fs.writeFileSync(DATA_FILE, JSON.stringify(remote.data, null, 2), 'utf-8');
+      console.log('Restored ' + remote.data.length + ' records from GitHub');
+    } else if (local.length > remote.data.length) {
+      console.log('Local has more data, syncing to GitHub...');
+      syncToGitHub();
+    } else {
+      console.log('Data in sync: ' + local.length + ' records');
+    }
+  } catch (err) {
+    console.error('Restore from GitHub failed:', err.message);
+  }
 }
 
 // ========== API 路由 ==========
@@ -48,6 +157,9 @@ app.post('/api/submit', (req, res) => {
 
     console.log(`[${new Date().toLocaleString()}] 收到新提交: ${submission.id}`);
     res.json({ success: true, id: submission.id });
+
+    // 异步同步到 GitHub（不阻塞响应）
+    syncToGitHub().catch(e => console.error('Async sync error:', e.message));
   } catch (err) {
     console.error('提交失败:', err);
     res.status(500).json({ success: false, error: '服务器内部错误' });
@@ -120,9 +232,13 @@ app.get('/api/status', (req, res) => {
 });
 
 // 启动服务
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`问卷后端已启动: http://localhost:${PORT}`);
   console.log(`  - 问卷页面: http://localhost:${PORT}/`);
   console.log(`  - 查看结果: http://localhost:${PORT}/api/results?pw=aibrief2026`);
   console.log(`  - 导出JSON: http://localhost:${PORT}/api/results/json?pw=aibrief2026`);
+  console.log(`  - GitHub备份: ${GIT_SYNC_ENABLED ? '已启用' : '未启用（缺少GITHUB_TOKEN）'}`);
+  if (GIT_SYNC_ENABLED) {
+    await restoreFromGitHub();
+  }
 });
