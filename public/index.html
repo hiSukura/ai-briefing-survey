@@ -1,675 +1,468 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI 简报事实调研 · 客成填写</title>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AI简报事实调研 · 客成填写</title>
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; background: #f5f5f5; color: #333; line-height: 1.6; }
-.container { max-width: 680px; margin: 0 auto; padding: 16px; }
-.header { background: #fff; border-radius: 12px; padding: 28px 24px; margin-bottom: 16px; text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-.header h1 { font-size: 20px; font-weight: 600; color: #1a1a1a; margin-bottom: 6px; }
-.header p { font-size: 14px; color: #888; }
-.header .badge { display: inline-block; background: #f0f5ff; color: #2b6de8; font-size: 12px; padding: 2px 10px; border-radius: 10px; margin-top: 6px; }
-.progress-wrap { background: #fff; border-radius: 8px; padding: 12px 24px; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); position: sticky; top: 8px; z-index: 10; }
-.progress-bar { flex: 1; height: 6px; background: #e8e8e8; border-radius: 3px; overflow: hidden; }
-.progress-fill { height: 100%; background: #52c41a; border-radius: 3px; transition: width 0.3s; }
-.progress-text { font-size: 13px; color: #666; white-space: nowrap; }
-.section { background: #fff; border-radius: 12px; padding: 24px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-.section-title { font-size: 16px; font-weight: 600; color: #1a1a1a; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
-.section-title .num { width: 24px; height: 24px; background: #2b6de8; color: #fff; border-radius: 50%; font-size: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.section-desc { font-size: 13px; color: #999; margin-bottom: 18px; }
-.field { margin-bottom: 20px; }
-.field:last-child { margin-bottom: 0; }
-.label { display: block; font-size: 15px; font-weight: 500; color: #333; margin-bottom: 6px; }
-.required::after { content: " *"; color: #e74c3c; font-weight: 700; }
-.hint { font-size: 12px; color: #aaa; margin-top: 2px; margin-bottom: 4px; }
-input[type="text"], textarea, input[type="number"] { width: 100%; border: 1px solid #ddd; border-radius: 8px; padding: 10px 12px; font-size: 15px; font-family: inherit; transition: border-color 0.2s; outline: none; background: #fafafa; }
-input[type="text"]:focus, textarea:focus, input[type="number"]:focus { border-color: #2b6de8; background: #fff; }
-textarea { resize: vertical; min-height: 80px; }
-.radio-group, .checkbox-group { display: flex; flex-direction: column; gap: 8px; }
-.radio-item, .checkbox-item { display: flex; align-items: flex-start; gap: 8px; padding: 10px 12px; border: 1px solid #eee; border-radius: 8px; cursor: pointer; transition: all 0.2s; background: #fafafa; }
-.radio-item:hover, .checkbox-item:hover { border-color: #2b6de8; background: #f0f5ff; }
-.radio-item input, .checkbox-item input { margin-top: 2px; accent-color: #2b6de8; }
-.radio-item.checked, .checkbox-item.checked { border-color: #2b6de8; background: #f0f5ff; }
-.radio-item span, .checkbox-item span { font-size: 14px; line-height: 1.5; }
-.submit-wrap { text-align: center; margin: 20px 0 40px; }
-.btn-submit { background: #52c41a; color: #fff; border: none; border-radius: 8px; padding: 14px 48px; font-size: 16px; font-weight: 600; cursor: pointer; transition: opacity 0.2s; letter-spacing: 1px; }
-.btn-submit:hover { opacity: 0.9; }
-.btn-submit:disabled { background: #ccc; cursor: not-allowed; }
-.result { display: none; background: #fff; border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-.result h3 { font-size: 18px; color: #52c41a; margin-bottom: 12px; }
-.result-card { background: #f9fafb; border-radius: 8px; padding: 16px; margin-bottom: 12px; border-left: 3px solid #2b6de8; }
-.result-card .q { font-size: 14px; color: #666; margin-bottom: 4px; }
-.result-card .a { font-size: 15px; color: #1a1a1a; font-weight: 500; white-space: pre-wrap; }
-.result-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
-.btn-copy, .btn-reset { padding: 10px 24px; border-radius: 8px; font-size: 14px; cursor: pointer; border: none; }
-.btn-copy { background: #2b6de8; color: #fff; }
-.btn-reset { background: #eee; color: #666; }
-.error { border-color: #e74c3c !important; }
-.toc { display: flex; flex-wrap: wrap; gap: 6px; padding: 12px 0; }
-.toc a { font-size: 12px; color: #2b6de8; text-decoration: none; padding: 3px 10px; background: #f0f5ff; border-radius: 12px; }
-.footer-text { text-align: center; font-size: 12px; color: #bbb; padding: 16px; }
-@media (max-width: 480px) {
-  .container { padding: 10px; }
-  .section { padding: 16px; }
-  .header { padding: 20px 16px; }
-}
-</style>
-</head>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:#f5f5f5;color:#333;line-height:1.6}
+.c{max-width:680px;margin:0 auto;padding:12px}
+.hd{background:#fff;border-radius:12px;padding:24px 20px;margin-bottom:12px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.hd h1{font-size:20px;font-weight:600;color:#1a1a1a;margin-bottom:4px}
+.hd p{font-size:14px;color:#888}.hd .bdg{display:inline-block;background:#f0f5ff;color:#2b6de8;font-size:12px;padding:2px 10px;border-radius:10px;margin-top:4px}
+.pg{background:#fff;border-radius:8px;padding:10px 20px;margin-bottom:12px;display:flex;align-items:center;gap:10px;box-shadow:0 1px 4px rgba(0,0,0,.06);position:sticky;top:8px;z-index:10}
+.pg-bar{flex:1;height:6px;background:#e8e8e8;border-radius:3px;overflow:hidden}
+.pg-fill{height:100%;background:#52c41a;border-radius:3px;transition:width .3s}
+.pg-t{font-size:13px;color:#666;white-space:nowrap}
+.sec{background:#fff;border-radius:12px;padding:22px 20px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.st{font-size:16px;font-weight:600;color:#1a1a1a;margin-bottom:3px;display:flex;align-items:center;gap:8px}
+.st .n{width:24px;height:24px;background:#2b6de8;color:#fff;border-radius:50%;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sd{font-size:13px;color:#999;margin-bottom:16px}
+.fd{margin-bottom:18px}.fd:last-child{margin-bottom:0}
+.lb{display:block;font-size:15px;font-weight:500;color:#333;margin-bottom:5px}
+.rq::after{content:" *";color:#e74c3c;font-weight:700}
+.ht{font-size:12px;color:#aaa;margin-bottom:4px}
+input[type="text"],textarea,input[type="number"]{width:100%;border:1px solid #ddd;border-radius:8px;padding:10px 12px;font-size:15px;font-family:inherit;transition:border-color .2s;outline:none;background:#fafafa}
+input[type="text"]:focus,textarea:focus,input[type="number"]:focus{border-color:#2b6de8;background:#fff}
+textarea{resize:vertical;min-height:80px}
+.rg,.cg{display:flex;flex-direction:column;gap:6px}
+.ri,.ci{display:flex;align-items:flex-start;gap:8px;padding:9px 12px;border:1px solid #eee;border-radius:8px;cursor:pointer;transition:all .2s;background:#fafafa}
+.ri:hover,.ci:hover{border-color:#2b6de8;background:#f0f5ff}
+.ri input,.ci input{margin-top:2px;accent-color:#2b6de8}
+.ri.ck,.ci.ck{border-color:#2b6de8;background:#f0f5ff}
+.ri span,.ci span{font-size:14px;line-height:1.5}
+.ot{display:none;margin-top:6px}.ot.show{display:block}
+.ot input{background:#fffbf0;border-color:#f0d8a8;font-size:14px;padding:8px 12px}
+.sw{text-align:center;margin:20px 0 40px}
+.btn-s{background:#52c41a;color:#fff;border:none;border-radius:8px;padding:14px 48px;font-size:16px;font-weight:600;cursor:pointer;transition:opacity .2s;letter-spacing:1px}
+.btn-s:hover{opacity:.9}.btn-s:disabled{background:#ccc;cursor:not-allowed}
+.rs{display:none;background:#fff;border-radius:12px;padding:22px 20px;margin-bottom:20px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.rs h3{font-size:18px;color:#52c41a;margin-bottom:10px}
+.rc{background:#f9fafb;border-radius:8px;padding:14px;margin-bottom:10px;border-left:3px solid #2b6de8}
+.rc .q{font-size:14px;color:#666;margin-bottom:3px}
+.rc .a{font-size:15px;color:#1a1a1a;font-weight:500;white-space:pre-wrap}
+.ra{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.btn-c,.btn-r{padding:10px 24px;border-radius:8px;font-size:14px;cursor:pointer;border:none}
+.btn-c{background:#2b6de8;color:#fff}.btn-r{background:#eee;color:#666}
+.er{border-color:#e74c3c!important}
+.ft{text-align:center;font-size:12px;color:#bbb;padding:16px}
+@media(max-width:480px){.c{padding:8px}.sec{padding:14px}.hd{padding:18px 14px}}
+</style></head>
 <body>
-<div class="container">
-  <div class="header">
-    <h1>AI 简报 · 事实调研</h1>
-    <p>请如实填写，不确定的写「不确定」或「TBD」</p>
-    <div class="badge">预计 8-12 分钟完成</div>
-  </div>
+<div class="c">
+<div class="hd"><h1>AI 简报 · 事实调研</h1><p>请以最近一份真实简报为例回答。不确定写「不确定」，不要猜。</p><div class="bdg">全部客成部成员填写 · 预计10-15分钟</div></div>
+<div class="pg"><div class="pg-bar"><div class="pg-fill" id="pf" style="width:0%"></div></div><div class="pg-t" id="pt">0 / 45</div></div>
 
-  <div class="progress-wrap">
-    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-    <div class="progress-text" id="progressText">0 / 32 题</div>
-  </div>
-
-  <div class="section">
-    <div class="section-title"><span class="num">1</span> 基本信息</div>
-    <div class="section-desc">请确认填写人信息</div>
-
-    <div class="field">
-      <label class="label required">您的姓名</label>
-      <input type="text" id="q1" data-q="1" placeholder="请填写真实姓名" required>
-    </div>
-    <div class="field">
-      <label class="label required">您所在岗位</label>
-      <input type="text" id="q2" data-q="2" placeholder="如：客户成功经理" required>
-    </div>
-    <div class="field">
-      <label class="label required">您目前负责制作/发送简报的客户数量</label>
-      <div class="hint">请填写数字</div>
-      <input type="number" id="q3" data-q="3" placeholder="如：5" min="0" required>
-    </div>
-  </div>
-
-  <div class="section" id="sec2">
-    <div class="section-title"><span class="num">2</span> 简报服务节奏</div>
-
-    <div class="field">
-      <label class="label required">给客户发简报的频率？</label>
-      <div class="radio-group" id="q4" data-q="4">
-        <label class="radio-item"><input type="radio" name="q4" value="每月"><span>每月</span></label>
-        <label class="radio-item"><input type="radio" name="q4" value="每季度"><span>每季度</span></label>
-        <label class="radio-item"><input type="radio" name="q4" value="按活动周期"><span>按活动周期</span></label>
-        <label class="radio-item"><input type="radio" name="q4" value="不定期"><span>不定期</span></label>
-        <label class="radio-item"><input type="radio" name="q4" value="其他"><span>其他（请下方备注）</span></label>
-      </div>
-    </div>
-    <div class="field">
-      <label class="label">若按月，通常每月几号前后发出？</label>
-      <input type="text" id="q5" data-q="5" placeholder="如：每月5号 / 月初3个工作日内">
-    </div>
-    <div class="field">
-      <label class="label">若按活动，活动周期一般多长？</label>
-      <input type="text" id="q6" data-q="6" placeholder="如：7天 / 1个月">
-    </div>
-    <div class="field">
-      <label class="label required">从数据准备到发给客户，平均耗时？</label>
-      <div class="radio-group" id="q7" data-q="7">
-        <label class="radio-item"><input type="radio" name="q7" value="1小时以内"><span>1小时以内</span></label>
-        <label class="radio-item"><input type="radio" name="q7" value="1-3小时"><span>1-3小时</span></label>
-        <label class="radio-item"><input type="radio" name="q7" value="半天（4小时以内）"><span>半天（4小时以内）</span></label>
-        <label class="radio-item"><input type="radio" name="q7" value="1天"><span>1天</span></label>
-        <label class="radio-item"><input type="radio" name="q7" value="2天及以上"><span>2天及以上</span></label>
-        <label class="radio-item"><input type="radio" name="q7" value="不确定"><span>不确定</span></label>
-      </div>
-    </div>
-    <div class="field">
-      <label class="label required">是否有固定 SOP 或检查清单？</label>
-      <div class="radio-group" id="q8" data-q="8">
-        <label class="radio-item"><input type="radio" name="q8" value="有，有书面文档"><span>有，有书面文档/路径</span></label>
-        <label class="radio-item"><input type="radio" name="q8" value="有，口头约定"><span>有，主要是口头约定</span></label>
-        <label class="radio-item"><input type="radio" name="q8" value="没有"><span>没有</span></label>
-        <label class="radio-item"><input type="radio" name="q8" value="不确定"><span>不确定</span></label>
-      </div>
-    </div>
-  </div>
-
-  <div class="section" id="sec3">
-    <div class="section-title"><span class="num">3</span> 客户与模板</div>
-
-    <div class="field">
-      <label class="label required">请列出您制作/发送简报的客户名称</label>
-      <div class="hint">每行一个客户，尽量完整（如：佳洁士、XX品牌）</div>
-      <textarea id="q9" data-q="9" placeholder="佳洁士&#10;XX品牌&#10;..." required></textarea>
-    </div>
-    <div class="field">
-      <label class="label required">简报模板类型？</label>
-      <div class="radio-group" id="q10" data-q="10">
-        <label class="radio-item"><input type="radio" name="q10" value="全部通用模板"><span>全部使用通用模板</span></label>
-        <label class="radio-item"><input type="radio" name="q10" value="全部定制"><span>全部为客户定制/活动定制</span></label>
-        <label class="radio-item"><input type="radio" name="q10" value="部分通用部分定制"><span>部分通用、部分定制</span></label>
-        <label class="radio-item"><input type="radio" name="q10" value="没有固定模板"><span>没有固定模板</span></label>
-        <label class="radio-item"><input type="radio" name="q10" value="不确定"><span>不确定</span></label>
-      </div>
-    </div>
-    <div class="field">
-      <label class="label required">各客户间模板差异大吗？</label>
-      <div class="radio-group" id="q11" data-q="11">
-        <label class="radio-item"><input type="radio" name="q11" value="差异很大"><span>差异很大，几乎每个客户都不同</span></label>
-        <label class="radio-item"><input type="radio" name="q11" value="有些差异"><span>有些差异，但框架类似</span></label>
-        <label class="radio-item"><input type="radio" name="q11" value="基本相同"><span>基本相同</span></label>
-        <label class="radio-item"><input type="radio" name="q11" value="完全一致"><span>完全一致</span></label>
-        <label class="radio-item"><input type="radio" name="q11" value="不确定"><span>不确定</span></label>
-      </div>
-    </div>
-    <div class="field">
-      <label class="label">模板差异主要体现在？（可多选）</label>
-      <div class="checkbox-group" id="q12" data-q="12">
-        <label class="checkbox-item"><input type="checkbox" name="q12" value="版式不同"><span>版式/排版不同</span></label>
-        <label class="checkbox-item"><input type="checkbox" name="q12" value="指标不同"><span>指标不同</span></label>
-        <label class="checkbox-item"><input type="checkbox" name="q12" value="结论写法不同"><span>结论/建议的写法不同</span></label>
-        <label class="checkbox-item"><input type="checkbox" name="q12" value="数据维度不同"><span>数据维度不同（如B端/C端拆分）</span></label>
-        <label class="checkbox-item"><input type="checkbox" name="q12" value="其他"><span>其他（请下方备注）</span></label>
-      </div>
-    </div>
-  </div>
-
-  <div class="section" id="sec4">
-    <div class="section-title"><span class="num">4</span> 指标使用</div>
-
-    <div class="field">
-      <label class="label required">最常出现的前10个指标？（按频率从高到低）</label>
-      <div class="hint">每行一个指标，如：扫码量、红包发放金额、门店数量、领奖人数、复扫率…</div>
-      <textarea id="q13" data-q="13" placeholder="1. 扫码量&#10;2. 红包发放金额&#10;3. 门店数量&#10;...&#10;不确定可填「不确定」" required></textarea>
-    </div>
-    <div class="field">
-      <label class="label required">以下哪些是您常用指标？（可多选）</label>
-      <div class="checkbox-group" id="q14" data-q="14">
-        <label class="checkbox-item"><input type="checkbox" name="q14" value="扫码量"><span>扫码量</span></label>
-        <label class="checkbox-item"><input type="checkbox" name="q14" value="扫码人数"><span>扫码人数/去重用户数</span></label>
-        <label class="checkbox-item"><input type="checkbox" name="q14" value="复扫率"><span>复扫率</span></label>
-        <label class="checkbox-item"><input type="checkbox" name="q14" value="红包发放金额"><span>红包发放金额/领取金额</span></label>
-        <label class="checkbox-item"><input type="checkbox" name="q14" value="门店数量"><span>门店数量/活跃门店数</span></label>
-        <label class="checkbox-item"><input type="checkbox" name="q14" value="领奖人数"><span>领奖人数/领奖次数</span></label>
-        <label class="checkbox-item"><input type="checkbox" name="q14" value="新增用户"><span>新增用户/新用户占比</span></label>
-        <label class="checkbox-item"><input type="checkbox" name="q14" value="老用户回流"><span>老用户回流/老用户占比</span></label>
-        <label class="checkbox-item"><input type="checkbox" name="q14" value="销售额"><span>销售额/销售件数</span></label>
-        <label class="checkbox-item"><input type="checkbox" name="q14" value="渠道进货量"><span>渠道进货量</span></label>
-        <label class="checkbox-item"><input type="checkbox" name="q14" value="防窜货扫码"><span>防窜货扫码量/异常扫码量</span></label>
-        <label class="checkbox-item"><input type="checkbox" name="q14" value="其他"><span>其他（请下方备注）</span></label>
-      </div>
-    </div>
-    <div class="field">
-      <label class="label required">需要区分B端/C端维度吗？</label>
-      <div class="radio-group" id="q15" data-q="15">
-        <label class="radio-item"><input type="radio" name="q15" value="所有客户都需要"><span>是，所有客户都需要</span></label>
-        <label class="radio-item"><input type="radio" name="q15" value="部分客户需要"><span>是，部分客户需要</span></label>
-        <label class="radio-item"><input type="radio" name="q15" value="不需要"><span>否，不需要</span></label>
-        <label class="radio-item"><input type="radio" name="q15" value="不确定"><span>不确定</span></label>
-      </div>
-    </div>
-    <div class="field">
-      <label class="label required">是否使用环比（与上月对比）？</label>
-      <div class="radio-group" id="q16" data-q="16">
-        <label class="radio-item"><input type="radio" name="q16" value="经常用"><span>经常用</span></label>
-        <label class="radio-item"><input type="radio" name="q16" value="偶尔用"><span>偶尔用</span></label>
-        <label class="radio-item"><input type="radio" name="q16" value="不用"><span>不用</span></label>
-        <label class="radio-item"><input type="radio" name="q16" value="不确定"><span>不确定</span></label>
-      </div>
-    </div>
-    <div class="field">
-      <label class="label required">是否使用同比（与去年同期对比）？</label>
-      <div class="radio-group" id="q17" data-q="17">
-        <label class="radio-item"><input type="radio" name="q17" value="经常用"><span>经常用</span></label>
-        <label class="radio-item"><input type="radio" name="q17" value="偶尔用"><span>偶尔用</span></label>
-        <label class="radio-item"><input type="radio" name="q17" value="不用"><span>不用</span></label>
-        <label class="radio-item"><input type="radio" name="q17" value="不确定"><span>不确定</span></label>
-      </div>
-    </div>
-  </div>
-
-  <div class="section" id="sec5">
-    <div class="section-title"><span class="num">5</span> 数据来源与制作</div>
-
-    <div class="field">
-      <label class="label required">获取简报数据的主要方式？（可多选）</label>
-      <div class="checkbox-group" id="q18" data-q="18">
-        <label class="checkbox-item"><input type="checkbox" name="q18" value="系统后台导出"><span>系统后台直接查看/导出</span></label>
-        <label class="checkbox-item"><input type="checkbox" name="q18" value="找开发导出"><span>找开发/数据同事导出</span></label>
-        <label class="checkbox-item"><input type="checkbox" name="q18" value="自己从数据库取数"><span>自己从数据库取数</span></label>
-        <label class="checkbox-item"><input type="checkbox" name="q18" value="手工Excel汇总"><span>手工从多个Excel汇总</span></label>
-        <label class="checkbox-item"><input type="checkbox" name="q18" value="已有API"><span>使用已有数据接口/API</span></label>
-        <label class="checkbox-item"><input type="checkbox" name="q18" value="其他"><span>其他（请下方备注）</span></label>
-        <label class="checkbox-item"><input type="checkbox" name="q18" value="不确定"><span>不确定</span></label>
-      </div>
-    </div>
-    <div class="field">
-      <label class="label required">是否有统一的一次取全量简报数据的接口？</label>
-      <div class="radio-group" id="q19" data-q="19">
-        <label class="radio-item"><input type="radio" name="q19" value="有且常用"><span>有，常用</span></label>
-        <label class="radio-item"><input type="radio" name="q19" value="有但不完整"><span>有，但不完整</span></label>
-        <label class="radio-item"><input type="radio" name="q19" value="没有"><span>没有</span></label>
-        <label class="radio-item"><input type="radio" name="q19" value="不确定"><span>不确定</span></label>
-      </div>
-    </div>
-    <div class="field">
-      <label class="label required">各指标统计口径是否有书面定义？</label>
-      <div class="radio-group" id="q20" data-q="20">
-        <label class="radio-item"><input type="radio" name="q20" value="有且齐全"><span>有，文档齐全</span></label>
-        <label class="radio-item"><input type="radio" name="q20" value="部分有"><span>部分有</span></label>
-        <label class="radio-item"><input type="radio" name="q20" value="没有"><span>没有</span></label>
-        <label class="radio-item"><input type="radio" name="q20" value="不确定"><span>不确定</span></label>
-      </div>
-    </div>
-    <div class="field">
-      <label class="label required">制作简报最难统一的部分？</label>
-      <div class="radio-group" id="q21" data-q="21">
-        <label class="radio-item"><input type="radio" name="q21" value="数据口径"><span>数据口径不统一</span></label>
-        <label class="radio-item"><input type="radio" name="q21" value="指标选择"><span>指标选择不统一</span></label>
-        <label class="radio-item"><input type="radio" name="q21" value="模板版式"><span>模板版式不统一</span></label>
-        <label class="radio-item"><input type="radio" name="q21" value="结论写法"><span>结论/建议写法不统一</span></label>
-        <label class="radio-item"><input type="radio" name="q21" value="取数流程"><span>取数流程太繁琐</span></label>
-        <label class="radio-item"><input type="radio" name="q21" value="其他"><span>其他（请下方备注）</span></label>
-      </div>
-    </div>
-    <div class="field">
-      <label class="label">最希望系统自动化的部分？（可多选）</label>
-      <div class="checkbox-group" id="q22" data-q="22">
-        <label class="checkbox-item"><input type="checkbox" name="q22" value="数据自动取数"><span>数据自动取数/汇总</span></label>
-        <label class="checkbox-item"><input type="checkbox" name="q22" value="指标计算"><span>指标计算</span></label>
-        <label class="checkbox-item"><input type="checkbox" name="q22" value="图表生成"><span>图表生成</span></label>
-        <label class="checkbox-item"><input type="checkbox" name="q22" value="结论生成"><span>结论/建议生成</span></label>
-        <label class="checkbox-item"><input type="checkbox" name="q22" value="报告排版"><span>报告排版</span></label>
-        <label class="checkbox-item"><input type="checkbox" name="q22" value="报告发送"><span>报告发送</span></label>
-        <label class="checkbox-item"><input type="checkbox" name="q22" value="其他"><span>其他（请下方备注）</span></label>
-      </div>
-    </div>
-  </div>
-
-  <div class="section" id="sec6">
-    <div class="section-title"><span class="num">6</span> AI 使用边界与期望</div>
-
-    <div class="field">
-      <label class="label">目前简报中哪些部分用了AI/工具辅助？（可多选）</label>
-      <div class="checkbox-group" id="q23" data-q="23">
-        <label class="checkbox-item"><input type="checkbox" name="q23" value="数据整理"><span>数据整理/计算</span></label>
-        <label class="checkbox-item"><input type="checkbox" name="q23" value="图表生成"><span>图表生成</span></label>
-        <label class="checkbox-item"><input type="checkbox" name="q23" value="文案润色"><span>文案润色</span></label>
-        <label class="checkbox-item"><input type="checkbox" name="q23" value="结论撰写"><span>结论/建议撰写</span></label>
-        <label class="checkbox-item"><input type="checkbox" name="q23" value="完全不用"><span>完全没有使用</span></label>
-        <label class="checkbox-item"><input type="checkbox" name="q23" value="其他"><span>其他（请下方备注）</span></label>
-      </div>
-    </div>
-    <div class="field">
-      <label class="label required">「总结」是否需要因客户而异？</label>
-      <div class="radio-group" id="q24" data-q="24">
-        <label class="radio-item"><input type="radio" name="q24" value="差异大"><span>是，每个客户差异大</span></label>
-        <label class="radio-item"><input type="radio" name="q24" value="差异不大"><span>是，但差异不大</span></label>
-        <label class="radio-item"><input type="radio" name="q24" value="可以统一"><span>否，可以统一</span></label>
-        <label class="radio-item"><input type="radio" name="q24" value="不确定"><span>不确定</span></label>
-      </div>
-    </div>
-    <div class="field">
-      <label class="label required">「建议」是否需要因客户而异？</label>
-      <div class="radio-group" id="q25" data-q="25">
-        <label class="radio-item"><input type="radio" name="q25" value="差异大"><span>是，每个客户差异大</span></label>
-        <label class="radio-item"><input type="radio" name="q25" value="差异不大"><span>是，但差异不大</span></label>
-        <label class="radio-item"><input type="radio" name="q25" value="可以统一"><span>否，可以统一</span></label>
-        <label class="radio-item"><input type="radio" name="q25" value="不确定"><span>不确定</span></label>
-      </div>
-    </div>
-    <div class="field">
-      <label class="label">最希望AI帮什么？（原话）</label>
-      <textarea id="q26" data-q="26" placeholder="请用原话描述，不需要修饰"></textarea>
-    </div>
-    <div class="field">
-      <label class="label">最担心AI出什么问题？（原话）</label>
-      <textarea id="q27" data-q="27" placeholder="如：数据不准、结论偏离客户实际情况等"></textarea>
-    </div>
-  </div>
-
-  <div class="section" id="sec7">
-    <div class="section-title"><span class="num">7</span> 验证与试点</div>
-
-    <div class="field">
-      <label class="label">是否有适合对照验证的客户？</label>
-      <div class="radio-group" id="q28" data-q="28">
-        <label class="radio-item"><input type="radio" name="q28" value="有"><span>有，如佳洁士等</span></label>
-        <label class="radio-item"><input type="radio" name="q28" value="可能有"><span>可能有，但需确认</span></label>
-        <label class="radio-item"><input type="radio" name="q28" value="没有"><span>没有</span></label>
-        <label class="radio-item"><input type="radio" name="q28" value="不确定"><span>不确定</span></label>
-      </div>
-    </div>
-    <div class="field">
-      <label class="label">是否有上月/上期手工简报样例可提供？</label>
-      <div class="radio-group" id="q29" data-q="29">
-        <label class="radio-item"><input type="radio" name="q29" value="有可发送"><span>有，可发送附件/给路径</span></label>
-        <label class="radio-item"><input type="radio" name="q29" value="有需申请"><span>有，但需申请</span></label>
-        <label class="radio-item"><input type="radio" name="q29" value="没有"><span>没有</span></label>
-        <label class="radio-item"><input type="radio" name="q29" value="不确定"><span>不确定</span></label>
-      </div>
-    </div>
-    <div class="field">
-      <label class="label">系统生成一版，你评审需要多久？</label>
-      <div class="radio-group" id="q30" data-q="30">
-        <label class="radio-item"><input type="radio" name="q30" value="30分钟以内"><span>30分钟以内</span></label>
-        <label class="radio-item"><input type="radio" name="q30" value="1小时以内"><span>1小时以内</span></label>
-        <label class="radio-item"><input type="radio" name="q30" value="半天"><span>半天</span></label>
-        <label class="radio-item"><input type="radio" name="q30" value="1天"><span>1天</span></label>
-        <label class="radio-item"><input type="radio" name="q30" value="2天及以上"><span>2天及以上</span></label>
-        <label class="radio-item"><input type="radio" name="q30" value="不确定"><span>不确定</span></label>
-      </div>
-    </div>
-  </div>
-
-  <div class="section" id="sec8">
-    <div class="section-title"><span class="num">8</span> 痛点与优先级</div>
-
-    <div class="field">
-      <label class="label">目前制作简报最大的痛点？（一句话原话）</label>
-      <textarea id="q31" data-q="31" placeholder="请尽量用原话，不要加工。如：「每次取数要跨3个系统手动拼，半天就没了」"></textarea>
-    </div>
-    <div class="field">
-      <label class="label">本期必须解决的1-3个问题？</label>
-      <textarea id="q32" data-q="32" placeholder="1. 数据口径统一&#10;2. 自动取数&#10;3. 减少重复排版"></textarea>
-    </div>
-  </div>
-
-  <div class="section" id="sec9">
-    <div class="section-title"><span class="num">9</span> 详细补充（选填，但建议尽量填）</div>
-    <div class="section-desc">以下信息对方案设计非常关键，填得越细越好。格式模板已给，照着填就行。</div>
-
-    <div class="field">
-      <label class="label">本次反馈的调研方式？</label>
-      <div class="radio-group" id="q33" data-q="33">
-        <label class="radio-item"><input type="radio" name="q33" value="在线问卷"><span>在线问卷</span></label>
-        <label class="radio-item"><input type="radio" name="q33" value="访谈"><span>访谈</span></label>
-        <label class="radio-item"><input type="radio" name="q33" value="文档查阅"><span>文档查阅</span></label>
-        <label class="radio-item"><input type="radio" name="q33" value="其他"><span>其他（请备注）</span></label>
-      </div>
-    </div>
-
-    <div class="field">
-      <label class="label">数据来源说明（本次反馈的数据依据是什么？）</label>
-      <div class="hint">如：系统后台截图、手工统计 Excel、经验估算等。不确定请标注「不确定」。</div>
-      <textarea id="q34" data-q="34" placeholder="如：扫码量来源系统后台"扫码统计"页面，手工导出汇总。红包金额数据为经验估算，偏差约±10%。"></textarea>
-    </div>
-
-    <div class="field">
-      <label class="label">客户详细清单（按格式逐行填写）</label>
-      <div class="hint">格式：客户名称 ║ 行业/品类 ║ 简报类型（通用/活动定制）║ 备注</div>
-      <textarea id="q35" data-q="35" placeholder="佳洁士 ║ 日化快消 ║ 通用 ║ 按月&#10;XX白酒 ║ 白酒 ║ 活动定制 ║ 扫码活动结束后发&#10;不确定的字段填「不确定」"></textarea>
-    </div>
-
-    <div class="field">
-      <label class="label">核心指标详细定义（选前3-5个最重要的指标）</label>
-      <div class="hint">格式：指标名称 ║ 定义/口径说明 ║ 数据来源 ║ 取数方式（系统/Excel/人工）</div>
-      <textarea id="q36" data-q="36" placeholder="扫码量 ║ 活动期间累计扫码次数（含重复扫码）║ 系统后台 ║ 系统&#10;活跃门店数 ║ 当月至少1次扫码的门店数 ║ 手工统计 ║ Excel&#10;不确定的字段填「不确定」"></textarea>
-    </div>
-
-    <div class="field">
-      <label class="label">现有模板详细清单（逐行填写）</label>
-      <div class="hint">格式：模板名称/用途 ║ 适用客户 ║ 包含指标（列举）║ 制作方式（人工/半自动）║ 有文档？</div>
-      <textarea id="q37" data-q="37" placeholder="通用月度简报 ║ 全部客户 ║ 扫码量、红包金额、门店数 ║ 半自动 ║ 有&#10;活动定制简报 ║ 活动客户 ║ 扫码量、参与率、ROI ║ 人工 ║ 无&#10;没有固定模板填「无」"></textarea>
-    </div>
-
-    <div class="field">
-      <label class="label">数据取数链路明细（每指标一行）</label>
-      <div class="hint">格式：指标 ║ 当前取数方式 ║ 取数负责人 ║ 能否自动化 ║ 已知问题</div>
-      <textarea id="q38" data-q="38" placeholder="扫码量 ║ 后台导出 ║ 自己 ║ 能 ║ 无&#10;红包金额 ║ 找开发取数 ║ 吉岩 ║ 不确定 ║ 数据延迟1-2天&#10;门店数 ║ 手工Excel ║ 自己 ║ 不确定 ║ 门店数据更新不及时"></textarea>
-    </div>
-
-    <div class="field">
-      <label class="label">客户侧是否做过简报满意度反馈？</label>
-      <div class="radio-group" id="q39" data-q="39">
-        <label class="radio-item"><input type="radio" name="q39" value="做过"><span>做过，有反馈记录</span></label>
-        <label class="radio-item"><input type="radio" name="q39" value="没做过"><span>没做过</span></label>
-        <label class="radio-item"><input type="radio" name="q39" value="不确定"><span>不确定</span></label>
-      </div>
-    </div>
-  </div>
-
-  <div class="submit-wrap">
-    <button class="btn-submit" id="btnSubmit" onclick="submitForm()">提交反馈</button>
-    <div style="margin-top:8px;font-size:12px;color:#aaa;">提交后数据自动保存，Sakura 可在后台查看</div>
-  </div>
-
-  <div class="result" id="result">
-    <h3>✅ 提交成功！</h3>
-    <p style="font-size:14px;color:#666;margin-bottom:16px;">✅ 数据已自动提交！Sakura 会后台查看。你也可以复制留存。</p>
-    <div id="resultCards"></div>
-    <div class="result-actions">
-      <button class="btn-copy" onclick="copyResult()">一键复制</button>
-      <button class="btn-reset" onclick="resetForm()">重新填写</button>
-    </div>
-  </div>
-
-  <div class="footer-text">AI 简报项目组 · 事实调研 · 2026-07-13</div>
+<!-- ===== Part1 基本信息 ===== -->
+<div class="sec"><div class="st"><span class="n">1</span>基本信息</div><div class="sd">确认填写人身份</div>
+<div class="fd"><label class="lb rq">您的姓名</label><input type="text" id="q1" placeholder="真实姓名"></div>
+<div class="fd"><label class="lb rq">您所在岗位</label><input type="text" id="q2" placeholder="如：客户成功经理"></div>
+<div class="fd"><label class="lb rq">您负责制作/发送简报的客户数量</label><div class="ht">填写数字</div><input type="number" id="q3" min="0" placeholder="如：5"></div>
 </div>
 
+<!-- ===== Part2 简报节奏与数量 ===== -->
+<div class="sec"><div class="st"><span class="n">2</span>简报节奏与数量</div>
+<div class="fd"><label class="lb rq">给客户发简报的频率？</label>
+<div class="rg" id="q4">
+<label class="ri"><input type="radio" name="q4" value="每月"><span>每月</span></label>
+<label class="ri"><input type="radio" name="q4" value="每季度"><span>每季度</span></label>
+<label class="ri"><input type="radio" name="q4" value="按活动周期"><span>按活动周期</span></label>
+<label class="ri"><input type="radio" name="q4" value="不定期"><span>不定期</span></label>
+<label class="ri"><input type="radio" name="q4" value="其他"><span>其他</span></label>
+</div><div class="ot" id="q4_other"><input type="text" placeholder="如：活动结束后一周内"></div></div>
+<div class="fd"><label class="lb">过去一个月做了大概多少份简报？</label>
+<div class="rg" id="q5">
+<label class="ri"><input type="radio" name="q5" value="1-3份"><span>1-3份</span></label>
+<label class="ri"><input type="radio" name="q5" value="4-6份"><span>4-6份</span></label>
+<label class="ri"><input type="radio" name="q5" value="7-10份"><span>7-10份</span></label>
+<label class="ri"><input type="radio" name="q5" value="10份以上"><span>10份以上</span></label>
+</div></div>
+<div class="fd"><label class="lb">若按月，通常每月几号前后发出？</label><input type="text" id="q6" placeholder="如：每月5号 / 月初3个工作日"></div>
+<div class="fd"><label class="lb">若按活动，活动周期一般多长？</label><input type="text" id="q7" placeholder="如：7天 / 1个月"></div>
+<div class="fd"><label class="lb rq">从数据准备到发给客户全过程耗时？</label><div class="ht">从"去系统拉数据"开始到"简报通过微信/邮件发给客户"为止</div>
+<div class="rg" id="q8">
+<label class="ri"><input type="radio" name="q8" value="1小时以内"><span>1小时以内</span></label>
+<label class="ri"><input type="radio" name="q8" value="1-3小时"><span>1-3小时</span></label>
+<label class="ri"><input type="radio" name="q8" value="半天"><span>半天（4小时以内）</span></label>
+<label class="ri"><input type="radio" name="q8" value="1天"><span>1天</span></label>
+<label class="ri"><input type="radio" name="q8" value="2天及以上"><span>2天及以上</span></label>
+<label class="ri"><input type="radio" name="q8" value="不确定"><span>不确定</span></label>
+</div></div>
+<div class="fd"><label class="lb rq">是否有固定SOP或检查清单？</label><div class="ht">SOP=做简报的标准步骤（如"先取数据→再算指标→最后写总结"）；检查清单=发前核对的列表（数据齐了吗、格式对了吗等）</div>
+<div class="rg" id="q9">
+<label class="ri"><input type="radio" name="q9" value="有书面文档"><span>有，有书面文档/表格存放</span></label>
+<label class="ri"><input type="radio" name="q9" value="口头约定"><span>有，主要靠口头或脑子记</span></label>
+<label class="ri"><input type="radio" name="q9" value="没有"><span>没有，凭经验现做</span></label>
+<label class="ri"><input type="radio" name="q9" value="不确定"><span>不确定</span></label>
+</div></div>
+</div>
+
+<!-- ===== Part3 客户与场景 ===== -->
+<div class="sec"><div class="st"><span class="n">3</span>客户与场景</div>
+<div class="fd"><label class="lb rq">请列出您制作/发送简报的客户名称</label><div class="ht">每行一个客户（品牌方/经销商等组织单位），记不全就列记得的部分</div>
+<textarea id="q10" placeholder="佳洁士&#10;XX白酒&#10;..."></textarea></div>
+<div class="fd"><label class="lb rq">简报主要用于什么场景？</label><div class="ht">可多选，按实际情况勾</div>
+<div class="cg" id="q11">
+<label class="ci"><input type="checkbox" name="q11" value="月度汇报"><span>月度汇报</span></label>
+<label class="ci"><input type="checkbox" name="q11" value="活动结案"><span>活动结案</span></label>
+<label class="ci"><input type="checkbox" name="q11" value="年度复盘"><span>年度复盘</span></label>
+<label class="ci"><input type="checkbox" name="q11" value="续费支持"><span>续费/增购支持</span></label>
+<label class="ci"><input type="checkbox" name="q11" value="客户关系维护"><span>客户关系维护</span></label>
+<label class="ci"><input type="checkbox" name="q11" value="其他"><span>其他</span></label>
+</div><div class="ot" id="q11_other"><input type="text" placeholder="如：内部周报"></div></div>
+<div class="fd"><label class="lb rq">您负责的客户中，每种场景各有多少？</label><div class="ht">填数字。C端=消费者扫码活动客户，B端=渠道/门店活动客户，防窜货=产品流向监测客户，混合=同时有多种场景</div>
+<textarea id="q12" placeholder="C端消费者活动：3个&#10;B端渠道/门店：2个&#10;防窜货：1个&#10;混合场景：1个&#10;不确定的填「不确定」"></textarea></div>
+<div class="fd"><label class="lb rq">简报模板类型？</label>
+<div class="rg" id="q13">
+<label class="ri"><input type="radio" name="q13" value="全部通用"><span>全部用通用模板</span></label>
+<label class="ri"><input type="radio" name="q13" value="全部定制"><span>全部客户定制/活动定制</span></label>
+<label class="ri"><input type="radio" name="q13" value="混合"><span>部分通用、部分定制</span></label>
+<label class="ri"><input type="radio" name="q13" value="无固定"><span>没有固定模板</span></label>
+<label class="ri"><input type="radio" name="q13" value="不确定"><span>不确定</span></label>
+</div></div>
+</div>
+
+<!-- ===== Part4 指标全景 ===== -->
+<div class="sec"><div class="st"><span class="n">4</span>指标全景</div>
+<div class="fd"><label class="lb rq">最常出现的前10个指标？（按频率从高到低）</label><div class="ht">指标=简报中出现的统计数据结果，如"扫码量 1.2万次"。每行一个，不确定填「不确定」</div>
+<textarea id="q14" placeholder="1. 扫码量&#10;2. 红包发放金额&#10;3. 门店数量&#10;4. 领奖人数&#10;5. 复扫率&#10;..."></textarea></div>
+<div class="fd"><label class="lb rq">以下哪些是您实际使用过的指标？</label>
+<div class="cg" id="q15">
+<label class="ci"><input type="checkbox" name="q15" value="扫码量"><span>扫码量（扫码次数）</span></label>
+<label class="ci"><input type="checkbox" name="q15" value="扫码人数"><span>扫码人数/去重用户数</span></label>
+<label class="ci"><input type="checkbox" name="q15" value="复扫率"><span>复扫率</span></label>
+<label class="ci"><input type="checkbox" name="q15" value="红包发放金额"><span>红包/奖励发放金额</span></label>
+<label class="ci"><input type="checkbox" name="q15" value="领奖量"><span>领奖量/领奖人数</span></label>
+<label class="ci"><input type="checkbox" name="q15" value="核销量"><span>核销量/核销率</span></label>
+<label class="ci"><input type="checkbox" name="q15" value="门店数量"><span>门店数量/活跃门店数/参与门店数</span></label>
+<label class="ci"><input type="checkbox" name="q15" value="经销商数"><span>经销商数/参与经销商数</span></label>
+<label class="ci"><input type="checkbox" name="q15" value="新增用户"><span>新增用户/新老用户占比</span></label>
+<label class="ci"><input type="checkbox" name="q15" value="防窜货"><span>窜货事件数/异常扫码数</span></label>
+<label class="ci"><input type="checkbox" name="q15" value="Top榜单"><span>Top门店/Top经销商/Top区域</span></label>
+<label class="ci"><input type="checkbox" name="q15" value="其他"><span>其他</span></label>
+</div><div class="ot" id="q15_other"><input type="text" placeholder="如：渠道进货量、毛利率、客单价"></div></div>
+<div class="fd"><label class="lb rq">需要区分B端/C端维度吗？</label><div class="ht">B端=经销商/门店（采购方），C端=消费者/扫码用户（被营销方）</div>
+<div class="rg" id="q16">
+<label class="ri"><input type="radio" name="q16" value="所有都需要"><span>是，所有客户都需要</span></label>
+<label class="ri"><input type="radio" name="q16" value="部分需要"><span>是，部分客户需要</span></label>
+<label class="ri"><input type="radio" name="q16" value="不需要"><span>不需要</span></label>
+<label class="ri"><input type="radio" name="q16" value="不确定"><span>不确定</span></label>
+</div></div>
+<div class="fd"><label class="lb rq">是否使用环比（与上月对比）？</label>
+<div class="rg" id="q17">
+<label class="ri"><input type="radio" name="q17" value="经常"><span>经常用</span></label>
+<label class="ri"><input type="radio" name="q17" value="偶尔"><span>偶尔用</span></label>
+<label class="ri"><input type="radio" name="q17" value="不用"><span>不用</span></label>
+</div></div>
+<div class="fd"><label class="lb rq">是否使用同比（与去年同期对比）？</label>
+<div class="rg" id="q18">
+<label class="ri"><input type="radio" name="q18" value="经常"><span>经常用</span></label>
+<label class="ri"><input type="radio" name="q18" value="偶尔"><span>偶尔用</span></label>
+<label class="ri"><input type="radio" name="q18" value="不用"><span>不用</span></label>
+</div></div>
+<div class="fd"><label class="lb rq">各指标统计口径是否有书面定义？</label><div class="ht">统计口径=某指标"怎么算"的明文规则，如"复扫率=同一用户扫码≥2次的比例"</div>
+<div class="rg" id="q19">
+<label class="ri"><input type="radio" name="q19" value="有且齐全"><span>有，文档齐全</span></label>
+<label class="ri"><input type="radio" name="q19" value="部分有"><span>部分有</span></label>
+<label class="ri"><input type="radio" name="q19" value="没有"><span>没有</span></label>
+<label class="ri"><input type="radio" name="q19" value="不确定"><span>不确定</span></label>
+</div></div>
+</div>
+
+<!-- ===== Part5 取数链路 ===== -->
+<div class="sec"><div class="st"><span class="n">5</span>取数链路</div>
+<div class="fd"><label class="lb rq">获取简报数据的主要方式？</label>
+<div class="cg" id="q20">
+<label class="ci"><input type="checkbox" name="q20" value="系统后台导出"><span>系统后台直接查看/导出</span></label>
+<label class="ci"><input type="checkbox" name="q20" value="找开发取"><span>找开发/数据同事导出</span></label>
+<label class="ci"><input type="checkbox" name="q20" value="自己数据库"><span>自己从数据库取数</span></label>
+<label class="ci"><input type="checkbox" name="q20" value="手工Excel"><span>手工从多个Excel汇总</span></label>
+<label class="ci"><input type="checkbox" name="q20" value="已有API"><span>使用已有数据接口/API</span></label>
+<label class="ci"><input type="checkbox" name="q20" value="其他"><span>其他</span></label>
+</div><div class="ot" id="q20_other"><input type="text" placeholder="如：客户CRM后台导出"></div></div>
+<div class="fd"><label class="lb rq">从申请取数到拿到数据，平均等多久？</label>
+<div class="rg" id="q21">
+<label class="ri"><input type="radio" name="q21" value="当天"><span>当天</span></label>
+<label class="ri"><input type="radio" name="q21" value="1-2天"><span>1-2天</span></label>
+<label class="ri"><input type="radio" name="q21" value="3-5天"><span>3-5天</span></label>
+<label class="ri"><input type="radio" name="q21" value="一周以上"><span>一周以上</span></label>
+<label class="ri"><input type="radio" name="q21" value="不需等"><span>自己取，不需等</span></label>
+</div></div>
+<div class="fd"><label class="lb rq">取数后是否需要人工清洗、合并或去重？</label>
+<div class="rg" id="q22">
+<label class="ri"><input type="radio" name="q22" value="每次都需要"><span>几乎每次都需要</span></label>
+<label class="ri"><input type="radio" name="q22" value="偶尔需要"><span>偶尔需要</span></label>
+<label class="ri"><input type="radio" name="q22" value="不需要"><span>不需要</span></label>
+</div></div>
+<div class="fd"><label class="lb rq">是否出现过数据拿错客户、时间范围或统计口径？</label>
+<div class="rg" id="q23">
+<label class="ri"><input type="radio" name="q23" value="出现过"><span>出现过</span></label>
+<label class="ri"><input type="radio" name="q23" value="没出现过"><span>没出现过</span></label>
+<label class="ri"><input type="radio" name="q23" value="不确定"><span>不确定</span></label>
+</div></div>
+<div class="fd"><label class="lb rq">是否有统一的一次取全量简报数据的接口？</label><div class="ht">接口=系统提供的一次性拉数据的通道。做一份简报的数据能否"一次操作"全取出来？</div>
+<div class="rg" id="q24">
+<label class="ri"><input type="radio" name="q24" value="有且常用"><span>有，常用</span></label>
+<label class="ri"><input type="radio" name="q24" value="有但不完整"><span>有，但不完整</span></label>
+<label class="ri"><input type="radio" name="q24" value="没有"><span>没有</span></label>
+<label class="ri"><input type="radio" name="q24" value="不确定"><span>不确定</span></label>
+</div></div>
+</div>
+
+<!-- ===== Part6 AI工具使用 ===== -->
+<div class="sec"><div class="st"><span class="n">6</span>AI 工具使用</div>
+<div class="fd"><label class="lb rq">目前使用哪些AI工具做简报？</label>
+<div class="cg" id="q25">
+<label class="ci"><input type="checkbox" name="q25" value="GPT"><span>ChatGPT/GPT</span></label>
+<label class="ci"><input type="checkbox" name="q25" value="Kimi"><span>Kimi</span></label>
+<label class="ci"><input type="checkbox" name="q25" value="豆包"><span>豆包</span></label>
+<label class="ci"><input type="checkbox" name="q25" value="通义千问"><span>通义千问</span></label>
+<label class="ci"><input type="checkbox" name="q25" value="文心一言"><span>文心一言</span></label>
+<label class="ci"><input type="checkbox" name="q25" value="没用过"><span>完全没用AI</span></label>
+<label class="ci"><input type="checkbox" name="q25" value="其他"><span>其他</span></label>
+</div><div class="ot" id="q25_other"><input type="text" placeholder="如：DeepSeek、Claude"></div></div>
+<div class="fd"><label class="lb">一份简报通常需要执行几个Prompt？</label>
+<div class="rg" id="q26">
+<label class="ri"><input type="radio" name="q26" value="1个"><span>1个，一键到底</span></label>
+<label class="ri"><input type="radio" name="q26" value="2-3个"><span>2-3个，拆开用</span></label>
+<label class="ri"><input type="radio" name="q26" value="不固定"><span>不固定</span></label>
+<label class="ri"><input type="radio" name="q26" value="没用过"><span>没用过Prompt/AI</span></label>
+</div></div>
+<div class="fd"><label class="lb">AI生成的内容，大概有多少可以直接使用？</label>
+<div class="rg" id="q27">
+<label class="ri"><input type="radio" name="q27" value="80%以上"><span>80%以上</span></label>
+<label class="ri"><input type="radio" name="q27" value="50-80%"><span>50%-80%</span></label>
+<label class="ri"><input type="radio" name="q27" value="30-50%"><span>30%-50%</span></label>
+<label class="ri"><input type="radio" name="q27" value="30%以下"><span>30%以下</span></label>
+<label class="ri"><input type="radio" name="q27" value="没用过"><span>没用过AI</span></label>
+</div></div>
+<div class="fd"><label class="lb">AI是否出现过编造数据或虚构指标的情况？</label>
+<div class="rg" id="q28">
+<label class="ri"><input type="radio" name="q28" value="经常"><span>经常出现</span></label>
+<label class="ri"><input type="radio" name="q28" value="偶尔"><span>偶尔出现</span></label>
+<label class="ri"><input type="radio" name="q28" value="从不"><span>从不</span></label>
+<label class="ri"><input type="radio" name="q28" value="没用过"><span>没用过AI</span></label>
+</div></div>
+<div class="fd"><label class="lb">人工通常修改AI输出的哪些部分？</label>
+<div class="cg" id="q29">
+<label class="ci"><input type="checkbox" name="q29" value="数据"><span>数据（纠错）</span></label>
+<label class="ci"><input type="checkbox" name="q29" value="结论"><span>结论/建议</span></label>
+<label class="ci"><input type="checkbox" name="q29" value="表达"><span>客户表达方式</span></label>
+<label class="ci"><input type="checkbox" name="q29" value="格式"><span>格式/排版</span></label>
+<label class="ci"><input type="checkbox" name="q29" value="没改过"><span>基本不改</span></label>
+<label class="ci"><input type="checkbox" name="q29" value="没用过"><span>没用过AI</span></label>
+</div></div>
+</div>
+
+<!-- ===== Part7 审核与发布 ===== -->
+<div class="sec"><div class="st"><span class="n">7</span>审核与发布</div>
+<div class="fd"><label class="lb rq">简报最终由谁审核？</label>
+<div class="cg" id="q30">
+<label class="ci"><input type="checkbox" name="q30" value="自己"><span>自己审核</span></label>
+<label class="ci"><input type="checkbox" name="q30" value="主管"><span>主管审核</span></label>
+<label class="ci"><input type="checkbox" name="q30" value="同事"><span>同事交叉审核</span></label>
+<label class="ci"><input type="checkbox" name="q30" value="不需要"><span>不需要审核</span></label>
+</div></div>
+<div class="fd"><label class="lb rq">审核最关注什么？</label>
+<div class="cg" id="q31">
+<label class="ci"><input type="checkbox" name="q31" value="数据准确"><span>数据是否准确</span></label>
+<label class="ci"><input type="checkbox" name="q31" value="客户表达"><span>客户表达是否恰当</span></label>
+<label class="ci"><input type="checkbox" name="q31" value="指标完整"><span>指标是否完整</span></label>
+<label class="ci"><input type="checkbox" name="q31" value="结论合理"><span>结论/建议是否合理</span></label>
+<label class="ci"><input type="checkbox" name="q31" value="格式"><span>格式/排版</span></label>
+<label class="ci"><input type="checkbox" name="q31" value="其他"><span>其他</span></label>
+</div><div class="ot" id="q31_other"><input type="text" placeholder="如：是否泄露内部信息"></div></div>
+<div class="fd"><label class="lb rq">通过什么方式发给客户？</label>
+<div class="cg" id="q32">
+<label class="ci"><input type="checkbox" name="q32" value="企微"><span>企业微信</span></label>
+<label class="ci"><input type="checkbox" name="q32" value="微信"><span>个人微信</span></label>
+<label class="ci"><input type="checkbox" name="q32" value="邮件"><span>邮件</span></label>
+<label class="ci"><input type="checkbox" name="q32" value="MAP"><span>MAP平台链接</span></label>
+<label class="ci"><input type="checkbox" name="q32" value="其他"><span>其他</span></label>
+</div><div class="ot" id="q32_other"><input type="text" placeholder="如：钉钉、飞书"></div></div>
+<div class="fd"><label class="lb rq">客户主要用手机还是电脑查看简报？</label>
+<div class="rg" id="q33">
+<label class="ri"><input type="radio" name="q33" value="手机"><span>手机</span></label>
+<label class="ri"><input type="radio" name="q33" value="电脑"><span>电脑</span></label>
+<label class="ri"><input type="radio" name="q33" value="都有"><span>都有</span></label>
+<label class="ri"><input type="radio" name="q33" value="不确定"><span>不确定</span></label>
+</div></div>
+<div class="fd"><label class="lb">是否需要导出PDF或图片版发给客户？</label>
+<div class="rg" id="q34">
+<label class="ri"><input type="radio" name="q34" value="经常"><span>是，经常</span></label>
+<label class="ri"><input type="radio" name="q34" value="偶尔"><span>偶尔</span></label>
+<label class="ri"><input type="radio" name="q34" value="不需要"><span>不需要</span></label>
+</div></div>
+</div>
+
+<!-- ===== Part8 客户表达与异常 ===== -->
+<div class="sec"><div class="st"><span class="n">8</span>客户表达与异常处理</div>
+<div class="fd"><label class="lb">是否使用客户表达转换规则？</label><div class="ht">如"窜货严重"→"部分疑似异常流向"、"活跃度低"→"仍有提升空间"</div>
+<div class="rg" id="q35">
+<label class="ri"><input type="radio" name="q35" value="有规则且用"><span>有明确规则，在用</span></label>
+<label class="ri"><input type="radio" name="q35" value="凭经验"><span>有但靠经验，无书面规则</span></label>
+<label class="ri"><input type="radio" name="q35" value="没用过"><span>没用过</span></label>
+<label class="ri"><input type="radio" name="q35" value="不确定"><span>不确定</span></label>
+</div></div>
+<div class="fd"><label class="lb rq">数据缺失时（如缺少门店、用户ID等字段），当前怎么处理？</label>
+<div class="cg" id="q36">
+<label class="ci"><input type="checkbox" name="q36" value="那段不写"><span>缺失数据的指标直接跳过不写</span></label>
+<label class="ci"><input type="checkbox" name="q36" value="替代数据"><span>用其他相近数据替代</span></label>
+<label class="ci"><input type="checkbox" name="q36" value="手工估算"><span>人工估算填个数</span></label>
+<label class="ci"><input type="checkbox" name="q36" value="问客户"><span>找客户要</span></label>
+<label class="ci"><input type="checkbox" name="q36" value="其他"><span>其他</span></label>
+</div><div class="ot" id="q36_other"><input type="text" placeholder="如：直接跟开发申请补数据"></div></div>
+<div class="fd"><label class="lb">客户收到简报后最常见的追问是什么？</label><div class="ht">不用长篇，列1-3个具体问题就行。如："XX指标为什么降了""这个数据跟我知道的不一样"</div>
+<textarea id="q37" placeholder="1. XX指标为什么同比下降了&#10;2. 这个数据跟我看到的不一致&#10;3. 能不能加XX指标&#10;没有追问填「无」"></textarea></div>
+<div class="fd"><label class="lb rq">有没有因简报直接促成续费或增购的案例？</label>
+<div class="rg" id="q38">
+<label class="ri"><input type="radio" name="q38" value="有"><span>有</span></label>
+<label class="ri"><input type="radio" name="q38" value="可能有"><span>可能有，但需确认</span></label>
+<label class="ri"><input type="radio" name="q38" value="没有"><span>没有</span></label>
+<label class="ri"><input type="radio" name="q38" value="不确定"><span>不确定</span></label>
+</div></div>
+</div>
+
+<!-- ===== Part9 详细补充·选填 ===== -->
+<div class="sec"><div class="st"><span class="n">9</span>详细补充</div><div class="sd">以下选填，但填得越细对方案越有帮助。给了格式模板，照着填就行。</div>
+<div class="fd"><label class="lb">客户详细清单</label><div class="ht">格式：客户名称 ║ 行业/品类 ║ 简报类型（通用/活动定制）║ 备注</div>
+<textarea id="q39" placeholder="佳洁士 ║ 日化快消 ║ 通用 ║ 按月&#10;XX白酒 ║ 白酒 ║ 活动定制 ║ 活动结束后发&#10;不确定的字段填「不确定」"></textarea></div>
+<div class="fd"><label class="lb">核心指标口径说明（选前3-5个最重要指标）</label><div class="ht">格式：指标名称 ║ 统计口径（怎么算的）║ 数据来源 ║ 能否自动取</div>
+<textarea id="q40" placeholder="扫码量 ║ 活动期间累计扫码次数（含重复）║ 后台"扫码统计"页 ║ 能&#10;活跃门店数 ║ 当月至少1次扫码的门店数 ║ 手工统计 ║ 不确定&#10;不确定的填「不确定」"></textarea></div>
+<div class="fd"><label class="lb">最难统一的部分是？</label><div class="rg" id="q41">
+<label class="ri"><input type="radio" name="q41" value="数据口径"><span>数据口径不统一</span></label>
+<label class="ri"><input type="radio" name="q41" value="指标选择"><span>指标选择不统一</span></label>
+<label class="ri"><input type="radio" name="q41" value="模板版式"><span>模板版式不统一</span></label>
+<label class="ri"><input type="radio" name="q41" value="结论写法"><span>结论/建议写法不统一</span></label>
+<label class="ri"><input type="radio" name="q41" value="取数流程"><span>取数流程太繁琐</span></label>
+<label class="ri"><input type="radio" name="q41" value="其他"><span>其他</span></label>
+</div><div class="ot" id="q41_other"><input type="text" placeholder="如：每客户取数周期不同"></div></div>
+<div class="fd"><label class="lb">最希望系统自动化的部分？</label>
+<div class="cg" id="q42">
+<label class="ci"><input type="checkbox" name="q42" value="自动取数"><span>数据自动取数/汇总</span></label>
+<label class="ci"><input type="checkbox" name="q42" value="指标计算"><span>指标自动计算</span></label>
+<label class="ci"><input type="checkbox" name="q42" value="图表生成"><span>图表自动生成</span></label>
+<label class="ci"><input type="checkbox" name="q42" value="结论生成"><span>结论/建议生成</span></label>
+<label class="ci"><input type="checkbox" name="q42" value="报告排版"><span>报告排版</span></label>
+<label class="ci"><input type="checkbox" name="q42" value="审核辅助"><span>审核辅助（自动检查）</span></label>
+<label class="ci"><input type="checkbox" name="q42" value="异常预警"><span>异常数据预警</span></label>
+<label class="ci"><input type="checkbox" name="q42" value="其他"><span>其他</span></label>
+</div><div class="ot" id="q42_other"><input type="text" placeholder="如：自动生成客户沟通话术"></div></div>
+<div class="fd"><label class="lb">如有上月/上期手工简报样例可提供？</label><div class="rg" id="q43">
+<label class="ri"><input type="radio" name="q43" value="有可发"><span>有，可发送</span></label>
+<label class="ri"><input type="radio" name="q43" value="有需申请"><span>有，但需申请</span></label>
+<label class="ri"><input type="radio" name="q43" value="没有"><span>没有</span></label>
+</div></div>
+</div>
+
+<!-- ===== Part10 优先级 ===== -->
+<div class="sec"><div class="st"><span class="n">10</span>优先级判断</div>
+<div class="fd"><label class="lb rq">如果系统只能先解决3件事，最希望哪3件？</label><div class="ht">选3个</div>
+<div class="cg" id="q44">
+<label class="ci"><input type="checkbox" name="q44" value="自动取数"><span>自动取数，不用手工拉</span></label>
+<label class="ci"><input type="checkbox" name="q44" value="口径统一"><span>指标口径统一，不用猜</span></label>
+<label class="ci"><input type="checkbox" name="q44" value="模板统一"><span>模板统一，不用调格式</span></label>
+<label class="ci"><input type="checkbox" name="q44" value="AI生成"><span>AI自动生成结论</span></label>
+<label class="ci"><input type="checkbox" name="q44" value="图表"><span>图表自动生成</span></label>
+<label class="ci"><input type="checkbox" name="q44" value="审核辅助"><span>审核辅助自动检查</span></label>
+<label class="ci"><input type="checkbox" name="q44" value="一键发布"><span>一键发布到MAP/发出</span></label>
+</div></div>
+<div class="fd"><label class="lb">还有什么想补充的？（选填）</label><textarea id="q45" placeholder="任何你觉得需要补充的事实——不用修饰，直接说"></textarea></div>
+</div>
+
+<div class="sw"><button class="btn-s" id="btnSubmit">提交反馈</button><div style="margin-top:6px;font-size:12px;color:#aaa;">提交后数据自动保存</div></div>
+<div class="rs" id="result"><h3>✅ 提交成功！</h3><p style="font-size:14px;color:#666;margin-bottom:14px;">数据已自动提交，Sakura后台查看。可复制留存。</p><div id="rcs"></div>
+<div class="ra"><button class="btn-c" onclick="cp()">一键复制</button><button class="btn-r" onclick="rst()">重新填写</button></div></div>
+<div class="ft">AI简报项目组 · 事实调研 · 2026-07-13</div></div>
+
 <script>
-// 进度条
-function updateProgress() {
-  const fields = document.querySelectorAll('[data-q]');
-  let filled = 0;
-  fields.forEach(f => {
-    if (f.tagName === 'TEXTAREA' || f.tagName === 'INPUT') {
-      if (f.type === 'radio' || f.type === 'checkbox') return;
-      if (f.value.trim()) filled++;
-    }
-  });
-  // radio groups
-  const radioGroups = new Set();
-  document.querySelectorAll('.radio-group').forEach(g => radioGroups.add(g.id));
-  radioGroups.forEach(id => {
-    const checked = document.querySelector('input[name="' + id + '"]:checked');
-    if (checked) filled++;
-  });
-  // checkbox groups
-  const cbGroups = new Set();
-  document.querySelectorAll('.checkbox-group').forEach(g => cbGroups.add(g.id));
-  cbGroups.forEach(id => {
-    const checked = document.querySelectorAll('input[name="' + id + '"]:checked');
-    if (checked.length > 0) filled++;
-  });
-
-  const total = 39;
-  const pct = Math.round((filled / total) * 100);
-  document.getElementById('progressFill').style.width = pct + '%';
-  document.getElementById('progressText').textContent = filled + ' / ' + total + ' 题';
+const TG=45;
+function up() {
+ let f=0;
+ document.querySelectorAll('[id^="q"]').forEach(el=>{
+  if(el.tagName==='TEXTAREA'||(el.tagName==='INPUT'&&el.type!=='radio'&&el.type!=='checkbox')){if(el.value.trim())f++}
+ });
+ let rgs=new Set();document.querySelectorAll('.rg').forEach(g=>rgs.add(g.id));
+ rgs.forEach(id=>{if(document.querySelector('input[name="'+id+'"]:checked'))f++});
+ let cgs=new Set();document.querySelectorAll('.cg').forEach(g=>cgs.add(g.id));
+ cgs.forEach(id=>{if(document.querySelectorAll('input[name="'+id+'"]:checked').length>0)f++});
+ let p=Math.round(f/TG*100);
+ document.getElementById('pf').style.width=p+'%';
+ document.getElementById('pt').textContent=f+' / '+TG;
 }
+document.addEventListener('input',up);document.addEventListener('change',up);
 
-document.addEventListener('input', updateProgress);
-document.addEventListener('change', updateProgress);
-
-// Radio/Checkbox visual feedback
-document.querySelectorAll('.radio-item input, .checkbox-item input').forEach(input => {
-  input.addEventListener('change', function() {
-    if (this.type === 'radio') {
-      const name = this.name;
-      document.querySelectorAll('input[name="' + name + '"]').forEach(r => {
-        r.closest('.radio-item').classList.toggle('checked', r.checked);
-      });
-    } else {
-      this.closest('.checkbox-item').classList.toggle('checked', this.checked);
-    }
-  });
+document.querySelectorAll('.ri input,.ci input').forEach(inp=>{
+ inp.addEventListener('change',function(){
+  if(this.type==='radio'){let n=this.name;document.querySelectorAll('input[name="'+n+'"]').forEach(r=>r.closest('.ri').classList.toggle('ck',r.checked))}
+  else{this.closest('.ci').classList.toggle('ck',this.checked)}
+  let ob=document.getElementById(this.name+'_other');
+  if(ob&&document.querySelector('input[name="'+this.name+'"][value="其他"]:checked'))ob.classList.add('show');else if(ob)ob.classList.remove('show');
+ });
 });
 
-function getValue(el) {
-  if (!el) return '（未填写）';
-  if (el.tagName === 'TEXTAREA' || (el.tagName === 'INPUT' && el.type !== 'radio' && el.type !== 'checkbox')) {
-    return el.value.trim() || '（未填写）';
-  }
-  // radio group
-  const radios = document.querySelectorAll('input[name="' + el.id + '"]:checked');
-  if (radios.length > 0) return Array.from(radios).map(r => r.value).join('、');
-  // checkbox group
-  const checks = document.querySelectorAll('input[name="' + el.id + '"]:checked');
-  if (checks.length > 0) return Array.from(checks).map(r => r.value).join('、');
-  return '（未填写）';
-}
-
-const questions = [
-  { id: 'q1', label: '您的姓名' },
-  { id: 'q2', label: '您所在岗位' },
-  { id: 'q3', label: '负责制作/发送简报的客户数量' },
-  { id: 'q4', label: '发简报的频率' },
-  { id: 'q5', label: '若按月，每月几号发出' },
-  { id: 'q6', label: '若按活动，活动周期' },
-  { id: 'q7', label: '平均耗时' },
-  { id: 'q8', label: '是否有固定SOP' },
-  { id: 'q9', label: '客户清单' },
-  { id: 'q10', label: '简报模板类型' },
-  { id: 'q11', label: '各客户间模板差异' },
-  { id: 'q12', label: '模板差异体现（多选）' },
-  { id: 'q13', label: '最常出现的前10个指标' },
-  { id: 'q14', label: '常用指标（多选）' },
-  { id: 'q15', label: '需要区分B端/C端吗' },
-  { id: 'q16', label: '是否使用环比' },
-  { id: 'q17', label: '是否使用同比' },
-  { id: 'q18', label: '获取数据主要方式（多选）' },
-  { id: 'q19', label: '是否有统一取数接口' },
-  { id: 'q20', label: '统计口径是否有书面定义' },
-  { id: 'q21', label: '最难统一的部分' },
-  { id: 'q22', label: '最希望系统自动化的部分（多选）' },
-  { id: 'q23', label: '目前用AI辅助的部分（多选）' },
-  { id: 'q24', label: '「总结」是否需要因客户而异' },
-  { id: 'q25', label: '「建议」是否需要因客户而异' },
-  { id: 'q26', label: '最希望AI帮什么' },
-  { id: 'q27', label: '最担心AI出什么问题' },
-  { id: 'q28', label: '是否有适合对照验证的客户' },
-  { id: 'q29', label: '是否有手工简报样例可提供' },
-  { id: 'q30', label: '系统生成一版评审需要多久' },
-  { id: 'q31', label: '最大痛点（原话）' },
-  { id: 'q32', label: '本期必须解决的1-3个问题' },
-  { id: 'q33', label: '调研方式' },
-  { id: 'q34', label: '数据来源说明' },
-  { id: 'q35', label: '客户详细清单' },
-  { id: 'q36', label: '核心指标详细定义' },
-  { id: 'q37', label: '模板详细清单' },
-  { id: 'q38', label: '数据取数链路明细' },
-  { id: 'q39', label: '客户满意度反馈' },
+const QS=[
+ {id:'q1',l:'姓名'},{id:'q2',l:'岗位'},{id:'q3',l:'客户数量'},
+ {id:'q4',l:'发简报频率'},{id:'q5',l:'过去一月做几份'},{id:'q6',l:'若按月几号发'},{id:'q7',l:'活动周期'},{id:'q8',l:'全流程耗时'},{id:'q9',l:'是否有SOP'},
+ {id:'q10',l:'客户清单'},{id:'q11',l:'使用场景'},{id:'q12',l:'各场景客户数'},{id:'q13',l:'模板类型'},
+ {id:'q14',l:'前10指标'},{id:'q15',l:'常用指标'},{id:'q16',l:'B/C端区分'},{id:'q17',l:'环比'},{id:'q18',l:'同比'},{id:'q19',l:'口径书面定义'},
+ {id:'q20',l:'获取数据方式'},{id:'q21',l:'取数等待时间'},{id:'q22',l:'是否需清洗'},{id:'q23',l:'取错过数据吗'},{id:'q24',l:'统一取数接口'},
+ {id:'q25',l:'使用哪些AI'},{id:'q26',l:'几个Prompt'},{id:'q27',l:'AI可用比例'},{id:'q28',l:'AI编造数据'},{id:'q29',l:'人工改什么'},
+ {id:'q30',l:'谁审核'},{id:'q31',l:'审核关注什么'},{id:'q32',l:'发给客户方式'},{id:'q33',l:'客户查看设备'},{id:'q34',l:'需要PDF吗'},
+ {id:'q35',l:'客户表达规则'},{id:'q36',l:'数据缺失处理'},{id:'q37',l:'客户追问'},{id:'q38',l:'续费增购案例'},
+ {id:'q39',l:'客户详细清单'},{id:'q40',l:'指标口径说明'},{id:'q41',l:'最难统一部分'},{id:'q42',l:'期望自动化'},{id:'q43',l:'样例可提供'},
+ {id:'q44',l:'优先级3件事'},{id:'q45',l:'补充说明'},
 ];
+const REQ=QS.map(q=>q.id).slice(0,38).concat(['q44']); // q1-q38 + q44 required
 
-// Required Qs
-const requiredFields = ['q1','q2','q3','q4','q7','q8','q9','q10','q11','q13','q14','q15','q16','q17','q18','q19','q20','q21','q24','q25'];
-
-function validate() {
-  let valid = true;
-  document.querySelectorAll('.error').forEach(e => e.classList.remove('error'));
-
-  for (const qid of requiredFields) {
-    const val = getValueByQid(qid);
-    if (!val || val === '（未填写）') {
-      const el = document.querySelector('[data-q="' + qid.replace('q','') + '"]');
-      if (el && (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT')) {
-        el.classList.add('error');
-      }
-      valid = false;
-    }
-  }
-
-  if (!valid) {
-    const firstErr = document.querySelector('.error');
-    if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
-  return valid;
+function gv(qid){
+ let g=document.getElementById(qid);
+ if(g&&g.classList.contains('rg')){
+  let c=document.querySelector('input[name="'+qid+'"]:checked');if(!c)return null;
+  let v=c.value;
+  if(v==='其他'){let o=document.querySelector('#'+qid+'_other input');let t=o?o.value.trim():'';v=t?'其他（'+t+')':'其他'}
+  return v;
+ }
+ if(g&&g.classList.contains('cg')){
+  let cs=document.querySelectorAll('input[name="'+qid+'"]:checked');if(!cs.length)return null;
+  return Array.from(cs).map(r=>{if(r.value==='其他'){let o=document.querySelector('#'+qid+'_other input');let t=o?o.value.trim():'';return t?'其他（'+t+')':'其他'}return r.value}).join('、');
+ }
+ let el=document.getElementById(qid);if(el)return el.value.trim()||null;return null;
 }
 
-function getValueByQid(qid) {
-  // radio/checkbox groups
-  const group = document.getElementById(qid);
-  if (group && group.classList.contains('radio-group')) {
-    const checked = document.querySelector('input[name="' + qid + '"]:checked');
-    return checked ? checked.value : null;
-  }
-  if (group && group.classList.contains('checkbox-group')) {
-    const checked = document.querySelectorAll('input[name="' + qid + '"]:checked');
-    return checked.length > 0 ? Array.from(checked).map(r => r.value).join('、') : null;
-  }
-  // input/textarea
-  const el = document.getElementById(qid);
-  if (el) return el.value.trim() || null;
-  return null;
+function vl(){
+ let ok=true;document.querySelectorAll('.er').forEach(e=>e.classList.remove('er'));
+ for(let qid of REQ){let v=gv(qid);if(!v){let el=document.getElementById(qid);if(el&&(el.tagName==='TEXTAREA'||el.tagName==='INPUT'))el.classList.add('er');ok=false}}
+ if(!ok){let fe=document.querySelector('.er');if(fe)fe.scrollIntoView({behavior:'smooth',block:'center'})}
+ return ok;
 }
 
-function submitForm() {
-  if (!validate()) return;
-
-  // 收集所有答案
-  const payload = {};
-  for (const q of questions) {
-    payload[q.id] = getValueByQid(q.id) || '';
-  }
-
-  // 显示提交中状态
-  const btn = document.getElementById('btnSubmit');
-  const origText = btn.textContent;
-  btn.textContent = '提交中...';
-  btn.disabled = true;
-
-  fetch('/api/submit', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.success) {
-      // 渲染结果
-      const cards = document.getElementById('resultCards');
-      cards.innerHTML = '';
-      for (const q of questions) {
-        const val = payload[q.id];
-        const card = document.createElement('div');
-        card.className = 'result-card';
-        card.innerHTML = '<div class="q">' + q.label + '</div><div class="a">' + (val || '（未填写）') + '</div>';
-        cards.appendChild(card);
-      }
-      document.getElementById('result').style.display = 'block';
-      document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
-    } else {
-      alert('提交失败，请重试');
-    }
-  })
-  .catch(err => {
-    alert('网络错误，提交失败：' + err.message + '\n请检查网络后重试，或截图发给 Sakura');
-  })
-  .finally(() => {
-    btn.textContent = origText;
-    btn.disabled = false;
-  });
+function submitForm(){
+ if(!vl())return;
+ let p={};QS.forEach(q=>p[q.id]=gv(q.id)||'');
+ let btn=document.getElementById('btnSubmit'),ot=btn.textContent;btn.textContent='提交中...';btn.disabled=true;
+ fetch('/api/submit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)})
+ .then(r=>r.json()).then(d=>{
+  if(d.success){
+   let cs=document.getElementById('rcs');cs.innerHTML='';
+   QS.forEach(q=>{let c=document.createElement('div');c.className='rc';c.innerHTML='<div class="q">'+q.l+'</div><div class="a">'+(p[q.id]||'（未填写）')+'</div>';cs.appendChild(c)});
+   document.getElementById('result').style.display='block';document.getElementById('result').scrollIntoView({behavior:'smooth'});
+  }else alert('提交失败，请重试');
+ }).catch(e=>alert('网络错误：'+e.message+'\n请重试')).finally(()=>{btn.textContent=ot;btn.disabled=false});
 }
 
-function copyResult() {
-  let text = 'AI 简报 · 事实调研 · 反馈结果\n' + new Date().toLocaleString() + '\n\n';
-  for (const q of questions) {
-    const val = getValueByQid(q.id);
-    text += '【' + q.label + '】\n' + (val || '（未填写）') + '\n\n';
-  }
-  navigator.clipboard.writeText(text).then(() => {
-    alert('已复制到剪贴板，可直接粘贴发送给 Sakura / 黄裕');
-  }).catch(() => {
-    // fallback
-    const ta = document.createElement('textarea');
-    ta.value = text;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    alert('已复制到剪贴板');
-  });
+function cp(){
+ let t='AI简报·事实调研·反馈\n'+new Date().toLocaleString()+'\n\n';
+ QS.forEach(q=>t+='【'+q.l+'】\n'+(gv(q.id)||'（未填写）')+'\n\n');
+ navigator.clipboard.writeText(t).then(()=>alert('已复制')).catch(()=>{let ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);alert('已复制')});
 }
 
-function resetForm() {
-  document.querySelectorAll('input[type="text"], input[type="number"], textarea').forEach(el => el.value = '');
-  document.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(el => el.checked = false);
-  document.querySelectorAll('.radio-item.checked, .checkbox-item.checked').forEach(el => el.classList.remove('checked'));
-  document.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
-  document.getElementById('result').style.display = 'none';
-  updateProgress();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+function rst(){
+ document.querySelectorAll('input[type="text"],input[type="number"],textarea').forEach(e=>e.value='');
+ document.querySelectorAll('input[type="radio"],input[type="checkbox"]').forEach(e=>e.checked=false);
+ document.querySelectorAll('.ri.ck,.ci.ck').forEach(e=>e.classList.remove('ck'));
+ document.querySelectorAll('.ot').forEach(e=>e.classList.remove('show'));
+ document.querySelectorAll('.ot input').forEach(e=>e.value='');
+ document.querySelectorAll('.er').forEach(e=>e.classList.remove('er'));
+ document.getElementById('result').style.display='none';up();window.scrollTo(0,0);
 }
-</script>
-</body>
-</html>
+</script></body></html>
