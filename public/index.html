@@ -354,19 +354,69 @@ textarea{resize:vertical;min-height:80px}
 </div></div>
 </div>
 
-<!-- ===== Part10 优先级 ===== -->
-<div class="sec"><div class="st"><span class="n">10</span>优先级判断</div>
-<div class="fd"><label class="lb rq">如果系统只能先解决3件事，最希望哪3件？</label><div class="ht">选3个</div>
-<div class="cg" id="q44">
-<label class="ci"><input type="checkbox" name="q44" value="自动取数"><span>自动取数，不用手工拉</span></label>
-<label class="ci"><input type="checkbox" name="q44" value="口径统一"><span>指标口径统一，不用猜</span></label>
-<label class="ci"><input type="checkbox" name="q44" value="模板统一"><span>模板统一，不用调格式</span></label>
-<label class="ci"><input type="checkbox" name="q44" value="AI生成"><span>AI自动生成结论</span></label>
-<label class="ci"><input type="checkbox" name="q44" value="图表"><span>图表自动生成</span></label>
-<label class="ci"><input type="checkbox" name="q44" value="审核辅助"><span>审核辅助自动检查</span></label>
-<label class="ci"><input type="checkbox" name="q44" value="一键发布"><span>一键发布到MAP/发出</span></label>
+<!-- ===== Part4.5 指标差异与细化 ===== -->
+<div class="sec"><div class="st"><span class="n">10</span>指标细化（核心部分）</div>
+<div class="sd">以下问题直接影响一期能做什么指标、怎么做。请尽量填。</div>
+
+<div class="fd"><label class="lb rq">所有客户都使用的共性指标有哪些？</label>
+<div class="ht">从前面列出的指标中挑，只写名称。如果有些指标80%客户都用，请注明。</div>
+<textarea id="q44" placeholder="所有客户都用：扫码量、红包金额、门店数&#10;80%+客户都用：领奖人数、复扫率&#10;只有个别客户用：防窜货事件数、核销率"></textarea></div>
+
+<div class="fd"><label class="lb rq">请为3个最重要的指标补充详细定义</label>
+<div class="ht">格式：指标名称 ║ 统计口径（怎么算）║ 单位 ║ 按次数/人数 ║ 需要哪些拆分维度（日/月/区域/门店）║ 能否自动取 ║ 谁能确认该指标正确</div>
+<textarea id="q45" placeholder="扫码量 ║ 活动期间累计扫码次数（含重复）║ 次 ║ 按次数 ║ 按日、按月 ║ 能 ║ 客成自己&#10;活跃门店数 ║ 当月至少1次扫码的门店数 ║ 个 ║ 按门店 ║ 按月、按区域 ║ 不确定 ║ 开发吉岩&#10;...&#10;不确定的字段填「不确定」"></textarea></div>
+
+<div class="fd"><label class="lb">哪些指标最容易被AI理解错误？</label>
+<div class="ht">AI经常把"扫码次数"当成"扫码人数"、强行计算缺失口径的比例等。列出具体指标名和错误类型。</div>
+<div class="cg" id="q46">
+<label class="ci"><input type="checkbox" name="q46" value="混淆次数人数"><span>混淆扫码次数和扫码人数</span></label>
+<label class="ci"><input type="checkbox" name="q46" value="强算缺失比例"><span>强行计算缺失口径的比例（如无门店总数时算门店参与率）</span></label>
+<label class="ci"><input type="checkbox" name="q46" value="编造数据"><span>编造不存在的指标数据</span></label>
+<label class="ci"><input type="checkbox" name="q46" value="错误趋势"><span>趋势描述和实际数据不符</span></label>
+<label class="ci"><input type="checkbox" name="q46" value="口径混乱"><span>相同指标但口径混乱（如领奖次数or领奖金额）</span></label>
+<label class="ci"><input type="checkbox" name="q46" value="其他"><span>其他</span></label>
+</div><div class="ot" id="q46_other"><input type="text" placeholder="如：把红包预算当成了红包消耗"></div></div>
+
+<div class="fd"><label class="lb rq">如果一期只能做5-10个指标，你优先哪几个？</label>
+<div class="ht">从前面列出的指标中挑。也请简单说原因（如"客户最关心""数据最稳""AI最不容易出错"）。</div>
+<textarea id="q47" placeholder="1. 扫码量 — 所有客户必看，数据稳定&#10;2. 红包金额 — 客户直接算ROI&#10;3. 门店数 — 管理层最关注&#10;4. 领奖人数 — 反映活动参与度&#10;5. 异常扫码 — B端客户核心关注&#10;..."></textarea></div>
+
+<div class="fd"><label class="lb">哪些指标看起来名字相同，但不同客户/场景口径实际不同？</label>
+<div class="ht">如"扫码量"在C端=消费者扫码，在B端=门店扫码，两者不能直接加在一起。列出具体指标和差异。</div>
+<textarea id="q48" placeholder="扫码量 ║ C端=消费者扫码次数，B端=门店/经销商扫码次数，口径不同不能合并&#10;门店数 ║ A客户=注册门店数，B客户=活跃门店数，口径不同&#10;...&#10;没有这种情况填「无」"></textarea></div>
+
+<div class="fd"><label class="lb">你们根据什么判断客户属于C端/B端/防窜货场景？</label>
+<div class="cg" id="q49">
+<label class="ci"><input type="checkbox" name="q49" value="购买产品"><span>根据客户购买的产品模块</span></label>
+<label class="ci"><input type="checkbox" name="q49" value="使用模块"><span>根据客户实际使用的系统模块</span></label>
+<label class="ci"><input type="checkbox" name="q49" value="业务目标"><span>根据客户业务目标（卖货/管渠道/防窜）</span></label>
+<label class="ci"><input type="checkbox" name="q49" value="客成判断"><span>凭客成个人经验判断</span></label>
+<label class="ci"><input type="checkbox" name="q49" value="不确定"><span>不确定，没有明确标准</span></label>
+<label class="ci"><input type="checkbox" name="q49" value="其他"><span>其他</span></label>
+</div><div class="ot" id="q49_other"><input type="text" placeholder="如：看客户合同里的服务范围"></div></div>
+
+<div class="fd"><label class="lb">是否存在按活动生成简报，而不是按客户生成的情况？</label>
+<div class="rg" id="q50">
+<label class="ri"><input type="radio" name="q50" value="经常"><span>经常，活动结束后单独做</span></label>
+<label class="ri"><input type="radio" name="q50" value="偶尔"><span>偶尔</span></label>
+<label class="ri"><input type="radio" name="q50" value="没有"><span>没有，都是按客户做</span></label>
+<label class="ri"><input type="radio" name="q50" value="不确定"><span>不确定</span></label>
 </div></div>
-<div class="fd"><label class="lb">还有什么想补充的？（选填）</label><textarea id="q45" placeholder="任何你觉得需要补充的事实——不用修饰，直接说"></textarea></div>
+</div>
+
+<!-- ===== Part11 优先级 ===== -->
+<div class="sec"><div class="st"><span class="n">11</span>优先级判断</div>
+<div class="fd"><label class="lb rq">如果系统只能先解决3件事，最希望哪3件？</label><div class="ht">选3个</div>
+<div class="cg" id="q51">
+<label class="ci"><input type="checkbox" name="q51" value="自动取数"><span>自动取数，不用手工拉</span></label>
+<label class="ci"><input type="checkbox" name="q51" value="口径统一"><span>指标口径统一，不用猜</span></label>
+<label class="ci"><input type="checkbox" name="q51" value="模板统一"><span>模板统一，不用调格式</span></label>
+<label class="ci"><input type="checkbox" name="q51" value="AI生成"><span>AI自动生成结论</span></label>
+<label class="ci"><input type="checkbox" name="q51" value="图表"><span>图表自动生成</span></label>
+<label class="ci"><input type="checkbox" name="q51" value="审核辅助"><span>审核辅助自动检查</span></label>
+<label class="ci"><input type="checkbox" name="q51" value="一键发布"><span>一键发布到MAP/发出</span></label>
+</div></div>
+<div class="fd"><label class="lb">还有什么想补充的？（选填）</label><textarea id="q52" placeholder="任何你觉得需要补充的事实——不用修饰，直接说"></textarea></div>
 </div>
 
 <div class="sw"><button class="btn-s" id="btnSubmit">提交反馈</button><div style="margin-top:6px;font-size:12px;color:#aaa;">提交后数据自动保存</div></div>
@@ -375,7 +425,7 @@ textarea{resize:vertical;min-height:80px}
 <div class="ft">AI简报项目组 · 事实调研 · 2026-07-13</div></div>
 
 <script>
-const TG=45;
+const TG=52;
 function up() {
  let f=0;
  document.querySelectorAll('[id^="q"]').forEach(el=>{
@@ -410,9 +460,10 @@ const QS=[
  {id:'q30',l:'谁审核'},{id:'q31',l:'审核关注什么'},{id:'q32',l:'发给客户方式'},{id:'q33',l:'客户查看设备'},{id:'q34',l:'需要PDF吗'},
  {id:'q35',l:'客户表达规则'},{id:'q36',l:'数据缺失处理'},{id:'q37',l:'客户追问'},{id:'q38',l:'续费增购案例'},
  {id:'q39',l:'客户详细清单'},{id:'q40',l:'指标口径说明'},{id:'q41',l:'最难统一部分'},{id:'q42',l:'期望自动化'},{id:'q43',l:'样例可提供'},
- {id:'q44',l:'优先级3件事'},{id:'q45',l:'补充说明'},
+ {id:'q44',l:'共性指标'},{id:'q45',l:'核心指标详细定义'},{id:'q46',l:'AI易误解指标'},{id:'q47',l:'一期优先指标'},{id:'q48',l:'口径相同但不同'},{id:'q49',l:'场景判断依据'},{id:'q50',l:'按活动生成简报'},
+ {id:'q51',l:'优先级3件事'},{id:'q52',l:'补充说明'},
 ];
-const REQ=QS.map(q=>q.id).slice(0,38).concat(['q44']); // q1-q38 + q44 required
+const REQ=QS.map(q=>q.id).slice(0,38).concat(['q44','q45','q47','q51']); // q1-q38 + q44 required
 
 function gv(qid){
  let g=document.getElementById(qid);
