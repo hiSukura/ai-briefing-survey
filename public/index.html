@@ -374,6 +374,60 @@ textarea { resize: vertical; min-height: 80px; }
     </div>
   </div>
 
+  <div class="section" id="sec9">
+    <div class="section-title"><span class="num">9</span> 详细补充（选填，但建议尽量填）</div>
+    <div class="section-desc">以下信息对方案设计非常关键，填得越细越好。格式模板已给，照着填就行。</div>
+
+    <div class="field">
+      <label class="label">本次反馈的调研方式？</label>
+      <div class="radio-group" id="q33" data-q="33">
+        <label class="radio-item"><input type="radio" name="q33" value="在线问卷"><span>在线问卷</span></label>
+        <label class="radio-item"><input type="radio" name="q33" value="访谈"><span>访谈</span></label>
+        <label class="radio-item"><input type="radio" name="q33" value="文档查阅"><span>文档查阅</span></label>
+        <label class="radio-item"><input type="radio" name="q33" value="其他"><span>其他（请备注）</span></label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label">数据来源说明（本次反馈的数据依据是什么？）</label>
+      <div class="hint">如：系统后台截图、手工统计 Excel、经验估算等。不确定请标注「不确定」。</div>
+      <textarea id="q34" data-q="34" placeholder="如：扫码量来源系统后台"扫码统计"页面，手工导出汇总。红包金额数据为经验估算，偏差约±10%。"></textarea>
+    </div>
+
+    <div class="field">
+      <label class="label">客户详细清单（按格式逐行填写）</label>
+      <div class="hint">格式：客户名称 ║ 行业/品类 ║ 简报类型（通用/活动定制）║ 备注</div>
+      <textarea id="q35" data-q="35" placeholder="佳洁士 ║ 日化快消 ║ 通用 ║ 按月&#10;XX白酒 ║ 白酒 ║ 活动定制 ║ 扫码活动结束后发&#10;不确定的字段填「不确定」"></textarea>
+    </div>
+
+    <div class="field">
+      <label class="label">核心指标详细定义（选前3-5个最重要的指标）</label>
+      <div class="hint">格式：指标名称 ║ 定义/口径说明 ║ 数据来源 ║ 取数方式（系统/Excel/人工）</div>
+      <textarea id="q36" data-q="36" placeholder="扫码量 ║ 活动期间累计扫码次数（含重复扫码）║ 系统后台 ║ 系统&#10;活跃门店数 ║ 当月至少1次扫码的门店数 ║ 手工统计 ║ Excel&#10;不确定的字段填「不确定」"></textarea>
+    </div>
+
+    <div class="field">
+      <label class="label">现有模板详细清单（逐行填写）</label>
+      <div class="hint">格式：模板名称/用途 ║ 适用客户 ║ 包含指标（列举）║ 制作方式（人工/半自动）║ 有文档？</div>
+      <textarea id="q37" data-q="37" placeholder="通用月度简报 ║ 全部客户 ║ 扫码量、红包金额、门店数 ║ 半自动 ║ 有&#10;活动定制简报 ║ 活动客户 ║ 扫码量、参与率、ROI ║ 人工 ║ 无&#10;没有固定模板填「无」"></textarea>
+    </div>
+
+    <div class="field">
+      <label class="label">数据取数链路明细（每指标一行）</label>
+      <div class="hint">格式：指标 ║ 当前取数方式 ║ 取数负责人 ║ 能否自动化 ║ 已知问题</div>
+      <textarea id="q38" data-q="38" placeholder="扫码量 ║ 后台导出 ║ 自己 ║ 能 ║ 无&#10;红包金额 ║ 找开发取数 ║ 吉岩 ║ 不确定 ║ 数据延迟1-2天&#10;门店数 ║ 手工Excel ║ 自己 ║ 不确定 ║ 门店数据更新不及时"></textarea>
+    </div>
+
+    <div class="field">
+      <label class="label">客户侧是否做过简报满意度反馈？</label>
+      <div class="radio-group" id="q39" data-q="39">
+        <label class="radio-item"><input type="radio" name="q39" value="做过"><span>做过，有反馈记录</span></label>
+        <label class="radio-item"><input type="radio" name="q39" value="没做过"><span>没做过</span></label>
+        <label class="radio-item"><input type="radio" name="q39" value="不确定"><span>不确定</span></label>
+      </div>
+    </div>
+  </div>
+
   <div class="submit-wrap">
     <button class="btn-submit" id="btnSubmit" onclick="submitForm()">提交反馈</button>
     <div style="margin-top:8px;font-size:12px;color:#aaa;">提交后数据自动保存，Sakura 可在后台查看</div>
@@ -418,7 +472,7 @@ function updateProgress() {
     if (checked.length > 0) filled++;
   });
 
-  const total = 32;
+  const total = 39;
   const pct = Math.round((filled / total) * 100);
   document.getElementById('progressFill').style.width = pct + '%';
   document.getElementById('progressText').textContent = filled + ' / ' + total + ' 题';
@@ -488,6 +542,13 @@ const questions = [
   { id: 'q30', label: '系统生成一版评审需要多久' },
   { id: 'q31', label: '最大痛点（原话）' },
   { id: 'q32', label: '本期必须解决的1-3个问题' },
+  { id: 'q33', label: '调研方式' },
+  { id: 'q34', label: '数据来源说明' },
+  { id: 'q35', label: '客户详细清单' },
+  { id: 'q36', label: '核心指标详细定义' },
+  { id: 'q37', label: '模板详细清单' },
+  { id: 'q38', label: '数据取数链路明细' },
+  { id: 'q39', label: '客户满意度反馈' },
 ];
 
 // Required Qs
